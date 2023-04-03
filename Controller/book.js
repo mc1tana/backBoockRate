@@ -23,22 +23,30 @@ exports.getAllBook= (req, res, next) => {
       .catch(error => res.status(401).json({ error }));
   }
 exports.createBook=(req, res, next) => {
-  console.log(req.body)
-    const bookObject = JSON.parse(req.body.book);
+      // console.log(req.body)
+    let bookObject = JSON.parse(req.body.book);
     delete bookObject._id;
     delete bookObject._userId;
-    const book = new Book({
-        ...bookObject,
-        userId: req.auth.userId,
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-    });
-    if (book.userId != req.auth.userId) {
-      res.status(401).json({ message : 'Not authorized'});
-  } else {
-    book.save()
-    .then(() => { res.status(201).json({message: 'Objet enregistré !'})})
-    .catch(error => { res.status(400).json( { error })})
-    }
+    bookObject.averageRating=bookObject.ratings[0].grade
+    // console.log({456:bookObject})
+    bookObject= verif(bookObject,res)
+    if(bookObject.message){
+      res.status(400).json({message : bookObject.message})
+    }else{ 
+          // if(bookObject.){}
+          const book = new Book({
+              ...bookObject,
+              userId: req.auth.userId,
+              imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+          });
+          if (book.userId != req.auth.userId) {
+            res.status(401).json({ message : 'Not authorized'});
+          } else {
+            book.save()
+            .then(() => { res.status(201).json({message: 'Objet enregistré !'})})
+            .catch(error => { res.status(400).json( { error })})
+          }
+        }
   }
 
 exports.modifyBook= (req, res, next) => {
@@ -48,23 +56,22 @@ exports.modifyBook= (req, res, next) => {
     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
 } : { ...req.body };
 if(res.file){
-bookObject= verif(bookObject, res, req.file.size) }else{
+  bookObject= verif(bookObject, res, req.file.size) }else{
   bookObject= verif(bookObject,res)
 }
 Book.findOne({_id: req.params.id})
     .then((book) => {
       if(bookObject.message){
-        console.log('jdjsj')
           res.status(400).json({message : bookObject.message})
         }else{
-        if (book.userId != req.auth.userId) {
+              if (book.userId != req.auth.userId) {
             res.status(401).json({ message : 'Not authorized'});
-        } else {
-              if(req.file){
-                book.imageUrl = book.imageUrl.split('/')[book.imageUrl.split('/').length-1]
-                console.log(book.imageUrl)
-                fs.unlink(`images/${book.imageUrl}`, (err) => {        
-                    if (err) throw err;
+              } else {
+                  if(req.file){
+                      book.imageUrl = book.imageUrl.split('/')[book.imageUrl.split('/').length-1]
+                      console.log(book.imageUrl)
+                      fs.unlink(`images/${book.imageUrl}`, (err) => {        
+                      if (err) throw err;
                 });}
             delete bookObject._userId;
             Book.updateOne({ _id: req.params.id}, { ...bookObject, _id: req.params.id})
@@ -75,7 +82,7 @@ Book.findOne({_id: req.params.id})
     .catch((error) => {
         res.status(400).json({ error });
     });
-  }
+}
 
 exports.deleteBook= (req, res, next) => {
   // Book.deleteOne({_id: req.params.id})
@@ -134,38 +141,87 @@ function verif(body, res, fileSize=null){
     return({message : "Size of file not authorize"})
   }
   try{       
-    // console.log({1:req.body})
-    // console.log({2:req.body})
-    for(let e in body){
-        // if(){}
-         let eltTest= body[e];
-        console.log(e)
-        //  console.log(isNaN( req.body[e]))
-         console.log(( {12 : body[e]}))
+    console.log({1:body})
+    // // console.log({2:body})
+    // for(let e in body){
+    //     // if(){}
+    //      let eltTest= body[e];
+    //      console.log(e)
+    //      console.log({595:typeof( body[e])})
+    //      console.log(( {12 : body[e]}))
         
-        if(typeof(body[e])=="string" && isNaN(body[e]) ){
-            console.log('not parse')
-            eltTest=body[e].trim() ?? undefined;
-        }
-        else if(body[e] && body[e]!=''){
-            console.log('parse')
-           eltTest=parseFloat(body[e])?? undefined
-        }
-        console.log(e)
-        console.log(eltTest)
-        // console.log(tabReg[e])
-        // console.log(tabReg[e].exec(eltTest))
-        if(tabReg[e].exec(eltTest)){
-            console.log('test')
-            body[e]=eltTest
-        }else{
-            return {message:("Not Good Format")}
-        } 
-    }
-    console.log('checked ok')
-    return body
+    //     if(typeof(body[e])=="string" && isNaN(body[e]) && typeof(body[e])!="object"){
+    //         console.log('not parse')
+    //         eltTest=body[e].trim() ?? undefined;
+    //     }
+    //     else if(body[e] && body[e]!='' &&typeof(body[e])!="object"){
+    //         console.log('parse')
+    //        eltTest=parseFloat(body[e])?? undefined
+    //     }
+    //     else if(typeof(body[e])=="object"){
+    //       console.log({256:body[e]})
+    //        body[e] =   verifObj(body[e])
+    //     }else if(body[e]==''){
+    //       return {message:(e+" : Not Good Format")}
+    //     }
+    //     console.log(e)
+    //     console.log(eltTest)
+    //     // console.log(tabReg[e])
+    //     // console.log(tabReg[e].exec(eltTest))
+    //     if(typeof(body[e])!="object"){
+    //         if(tabReg[e].exec(eltTest) ){
+    //             console.log('test')
+    //             body[e]=eltTest
+    //         }else{
+    //           return {message:(e+" : Not Good Format")}
+    //         } 
+    //       }
+    // }
+    // console.log('checked ok')
+    // return body
+    return verifObj(body)
 }catch(e){
 return {message:("Something wrong occured")}
 }
 
+}
+function verifObj(body){
+//  console.log({"body":typeof(body)})
+//  console.log({"body":body})
+  for(let ez in body){
+     let eltTestz= body[ez];
+    // console.log({0:ez})
+    //  console.log( {153:typeof(body[ez])})
+    //  console.log(( {12 : body[ez]}))
+    
+    if(typeof(body[ez])=="string" && isNaN(body[ez]) && typeof(body[ez])!="object"){
+        console.log('not parse')
+        eltTestz=body[ez].trim() ?? undefined;
+    }
+    else if(body[ez] && body[ez]!='' && typeof(body[ez])!="object"){
+        console.log('parse')
+       eltTestz=parseFloat(body[ez])?? undefined
+    }
+    else if(typeof(body[ez])=="object"){
+            // console.log({256:body[ez]})
+         body[ez] =  verifObj(body[ez])
+    }
+    // console.log({5465:ez})
+    // console.log(eltTestz)
+    // console.log(typeof(eltTestz))
+    // console.log(tabReg[e])
+    // console.log(tabReg[e].exec(eltTest))
+  if(typeof(eltTestz)!="object"){
+        // console.log({5266:"dsd"})
+        // console.log({526655:tabReg[ez]})
+        if(tabReg[ez].exec(eltTestz)){
+            console.log('test')
+            body[ez]=eltTestz
+        }else{
+            return {message:(ez+" : Not Good Format")}
+        } 
+  }   
+}
+// console.log(body)
+return body
 }

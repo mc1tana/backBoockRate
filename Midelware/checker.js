@@ -1,4 +1,3 @@
-const { userId } = require('../utilitises/regex');
 const tabReg= require('../utilitises/regex')
 module.exports = (req, res, next) => {
 	try{       
@@ -16,11 +15,11 @@ module.exports = (req, res, next) => {
              console.log(( {15:req.body[e]}))
             
             if(typeof(req.body[e])=="string" && isNaN(req.body[e]) ){
-                // console.log('not parse')
+                console.log('not parse')
                 eltTest=req.body[e].trim() ?? undefined;
             }
             else if(req.body[e] && req.body[e]!=''){
-                // console.log('parse')
+                console.log('parse')
                eltTest=parseFloat(req.body[e])?? undefined
             }
             // console.log(e)
