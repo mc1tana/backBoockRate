@@ -1,12 +1,12 @@
 const express = require('express');
 const app = express();
+require('dotenv').config();
 const userroute=require('./Router/user')
 const bookRoute=require('./Router/book')
 const path = require('path');
-const connectString = require('./Sensible')
 const mongoose = require('mongoose')
 app.use(express.json())
-mongoose.connect(connectString.stringConnection,
+mongoose.connect(process.env.stringConnection ,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))

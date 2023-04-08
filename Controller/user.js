@@ -2,7 +2,6 @@ const express=require('express')
 const User=require('../Model/User')
 const bcrypt= require('bcrypt')
 const jwt = require('jsonwebtoken');
-const secret= require('../Sensible')
 exports.allUser=(req,res,next)=>{
   User.find({}).then(e=>{console.log(e)})
   next()
@@ -40,7 +39,7 @@ exports.signup = (req, res, next) => {
                         userId: user._id,
                         token: jwt.sign(
                           { userId: user._id },
-                          secret.secretToken,
+                          process.env.secretToken,
                           { expiresIn: '24h' }
                       )
                     });

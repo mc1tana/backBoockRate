@@ -122,7 +122,7 @@ exports.deleteBook= (req, res, next) => {
                 if(book.ratings.findIndex(e=>e.userId==elt.userId)==0==true){
                   moye=elt.grade
                 }else{
-                moye=(moye+elt.grade)/2
+                moye=(moye+elt.grade)/book.ratings.length
               }
           });
         book.averageRating=moye
@@ -142,43 +142,7 @@ function verif(body, res, fileSize=null){
   }
   try{       
     console.log({1:body})
-    // // console.log({2:body})
-    // for(let e in body){
-    //     // if(){}
-    //      let eltTest= body[e];
-    //      console.log(e)
-    //      console.log({595:typeof( body[e])})
-    //      console.log(( {12 : body[e]}))
-        
-    //     if(typeof(body[e])=="string" && isNaN(body[e]) && typeof(body[e])!="object"){
-    //         console.log('not parse')
-    //         eltTest=body[e].trim() ?? undefined;
-    //     }
-    //     else if(body[e] && body[e]!='' &&typeof(body[e])!="object"){
-    //         console.log('parse')
-    //        eltTest=parseFloat(body[e])?? undefined
-    //     }
-    //     else if(typeof(body[e])=="object"){
-    //       console.log({256:body[e]})
-    //        body[e] =   verifObj(body[e])
-    //     }else if(body[e]==''){
-    //       return {message:(e+" : Not Good Format")}
-    //     }
-    //     console.log(e)
-    //     console.log(eltTest)
-    //     // console.log(tabReg[e])
-    //     // console.log(tabReg[e].exec(eltTest))
-    //     if(typeof(body[e])!="object"){
-    //         if(tabReg[e].exec(eltTest) ){
-    //             console.log('test')
-    //             body[e]=eltTest
-    //         }else{
-    //           return {message:(e+" : Not Good Format")}
-    //         } 
-    //       }
-    // }
-    // console.log('checked ok')
-    // return body
+    
     return verifObj(body)
 }catch(e){
 return {message:("Something wrong occured")}
