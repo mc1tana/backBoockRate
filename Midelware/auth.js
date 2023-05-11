@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
-const secret= require('../Sensible')
+const secret= process.env.secretToken
 module.exports = async (req, res, next) => {
    try {
     // console.log(req.headers)
        const token = req.headers.authorization.split(' ')[1];
-       const decodedToken = jwt.verify(token, secret.secretToken);
+       const decodedToken = jwt.verify(token, secret);
        const userId = decodedToken.userId;
        req.auth = {
            userId: userId
