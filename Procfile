@@ -1,1 +1,1 @@
-env: node serveur.js
+web: node serveur.js
