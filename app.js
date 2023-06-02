@@ -22,8 +22,8 @@ app.use((req, res, next) => {
   app.get('/',(req,res)=>{
     res.send('hello')
   })
-  app.use('/api/auth',userroute);
-  app.use('/api/books',bookRoute);
+  app.use('api/auth',userroute);
+  app.use('api/books',bookRoute);
   app.use('/images', express.static(path.join(__dirname, 'images')));
 module.exports = app;
 // MC MC19
