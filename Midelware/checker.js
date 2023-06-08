@@ -12,7 +12,7 @@ module.exports = (req, res, next) => {
              let eltTest= req.body[e];
             // console.log(e)
             //  console.log(isNaN( req.body[e]))
-             console.log(( {15:req.body[e]}))
+            //  console.log(( {15:req.body[e]}))
             
             if(typeof(req.body[e])=="string" && isNaN(req.body[e]) ){
                 console.log('not parse')
@@ -22,12 +22,7 @@ module.exports = (req, res, next) => {
                 console.log('parse')
                eltTest=parseFloat(req.body[e])?? undefined
             }
-            // console.log(e)
-            // console.log(eltTest)
-            // console.log(tabReg[e])
-            // console.log(tabReg[e].exec(eltTest))
             if(tabReg[e].exec(eltTest)){
-                // console.log('test')
                 req.body[e]=eltTest
             }else{
                 return res.status(400).json({message:(e+" : Not Good Format")})
